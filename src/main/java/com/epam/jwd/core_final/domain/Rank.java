@@ -1,6 +1,8 @@
 package com.epam.jwd.core_final.domain;
 
 import com.epam.jwd.core_final.exception.UnknownEntityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum Rank implements BaseEntity {
     TRAINEE(1L),
@@ -24,7 +26,7 @@ public enum Rank implements BaseEntity {
      */
     @Override
     public String getName() {
-        return null;
+        return this.name();
     }
 
     /**
@@ -33,6 +35,21 @@ public enum Rank implements BaseEntity {
      * @throws UnknownEntityException if such id does not exist
      */
     public static Rank resolveRankById(int id) {
-        return null;
+        Rank rank = null;
+        try{
+            switch (id){
+                case 1: rank = TRAINEE;break;
+                case 2: rank = SECOND_OFFICER;break;
+                case 3: rank = FIRST_OFFICER;break;
+                case 4: rank = CAPTAIN;break;
+            }
+        }
+        catch (UnknownEntityException e){
+            Logger logger = LoggerFactory.getLogger("logRank");
+            logger.error("such id does not exist"+ id);
+            System.out.println(new UnknownEntityException("Rank", id).getMessage());
+
+        }
+        return rank;
     }
 }

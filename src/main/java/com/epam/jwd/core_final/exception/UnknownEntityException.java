@@ -11,7 +11,7 @@ public class UnknownEntityException extends RuntimeException {
         this.args = null;
     }
 
-    public UnknownEntityException(String entityName, Object[] args) {
+    public UnknownEntityException(String entityName, Object... args) {
         super();
         this.entityName = entityName;
         this.args = args;
@@ -21,6 +21,6 @@ public class UnknownEntityException extends RuntimeException {
     public String getMessage() {
         // todo
         // you should use entityName, args (if necessary)
-        return null;
+        return entityName+"with id= "+args+"doesnt exist";
     }
 }
