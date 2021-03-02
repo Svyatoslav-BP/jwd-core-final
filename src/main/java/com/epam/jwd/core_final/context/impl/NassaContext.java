@@ -6,6 +6,7 @@ import com.epam.jwd.core_final.exception.InvalidStateException;
 import com.epam.jwd.core_final.factory.impl.CrewMemberFactory;
 import com.epam.jwd.core_final.factory.impl.PlanetFactory;
 import com.epam.jwd.core_final.factory.impl.SpaceshipFactory;
+import com.epam.jwd.core_final.util.PropertyReaderUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,6 +23,9 @@ public class NassaContext implements ApplicationContext {
     private Collection<CrewMember> crewMembers = new ArrayList<>();
     private Collection<Spaceship> spaceships = new ArrayList<>();
     private Collection<Planet> planetMap = new ArrayList<>();
+
+    private final ApplicationProperties applicationProperties = new ApplicationProperties();
+
 
     @Override
     public <T extends BaseEntity> Collection<T> retrieveBaseEntityList(Class<T> tClass) {
@@ -42,11 +46,12 @@ public class NassaContext implements ApplicationContext {
      *
      * @throws InvalidStateException
      */
+
     @Override
     public void init() throws InvalidStateException {
-        String crewFile = "src/main/resources/input/crew";
-        String spaceshipFile = "src/main/resources/input/spaceships";
-        String spacemapFile = "src/main/resources/input/spacemap";
+        String crewFile = "src/main/resources/"+applicationProperties.getInputRootDir()+"/"+applicationProperties.getCrewFileName();
+        String spaceshipFile = "src/main/resources/"+applicationProperties.getInputRootDir()+"/"+applicationProperties.getSpaceshipsFileName();
+        String spacemapFile = "src/main/resources/"+applicationProperties.getInputRootDir()+"/"+applicationProperties.getPlanetFileName();
 
         PlanetFactory planetFactory = new PlanetFactory();
         SpaceshipFactory spaceshipFactory = new SpaceshipFactory();
@@ -142,7 +147,7 @@ public class NassaContext implements ApplicationContext {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        throw new InvalidStateException();
+        //throw new InvalidStateException();
         }
     }
 
