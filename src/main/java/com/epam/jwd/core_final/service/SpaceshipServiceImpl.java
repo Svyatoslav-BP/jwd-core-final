@@ -112,7 +112,7 @@ public class SpaceshipServiceImpl implements SpaceshipService{
             return spaceship;
         }
         else {
-            logger.warn("CrewMember wasn't updated");
+            logger.warn("SpaceShip wasn't updated");
             return spaceship;
         }
     }

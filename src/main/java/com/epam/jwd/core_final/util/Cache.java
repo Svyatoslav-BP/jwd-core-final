@@ -6,12 +6,9 @@ import com.epam.jwd.core_final.domain.Planet;
 import com.epam.jwd.core_final.service.SpaceshipServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Cache {
+public class Cache extends TimerTask {
     private List<FlightMission> flightMissions;
 
     public List<FlightMission> getFlightMissions() {
@@ -23,6 +20,12 @@ public class Cache {
     private Cache(){
         flightMissions = new ArrayList<>();
     }
+
+    @Override
+    public void run() {
+        refreshCache();
+    }
+
     public static Cache getInstance(){
         if (instance==null){
             instance = new Cache();
@@ -44,8 +47,7 @@ public class Cache {
                             flightMissions.get(i).getAssignedCrew().stream()
                                     .forEach(crew -> crew.setReadyForNextMissions(true));
                         } else {
-                            System.out.println("SpaceShip" + flightMissions.get(i).getAssignedSpaceShip().getName()
-                                    + "crashed\n" + "Crew of this SpaceShip was dead");
+                            System.out.println("SpaceShip" + flightMissions.get(i).getAssignedSpaceShip().getName() + "crashed\n" + "Crew of this SpaceShip was dead");
                             flightMissions.get(i).setMissionResult(MissionResult.FAILED);
                         }
                     }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MissionServiceImpl implements MissionService{
@@ -48,7 +49,7 @@ public class MissionServiceImpl implements MissionService{
                     .forEach(i->flightMissions1.add(i));
         }
         else {
-            logger.error("Invalid criteria");
+            logger.error("Invalid statement");
         }
         return flightMissions1;
     }
@@ -75,72 +76,7 @@ public class MissionServiceImpl implements MissionService{
 
     @Override
     public FlightMission updateSpaceshipDetails(FlightMission flightMission) {
-        //переделать
-        Map<Role,Short> crewMap= new HashMap<>();
-        System.out.println("Updating of SpaceShip Crew:\n Chose:\n 1.Update FlightDistance\n 2.Update Crew");
-        int input = scanner.nextInt();
-        while(input!=1&&input!=2){
-            System.out.println("Bad Choice, Try again");
-            input = scanner.nextInt();
-        }
-         if(input==2){
-            int m = 0;
-            int f = 0;
-            int p = 0;
-            int c = 0;
-            for (CrewMember i :
-                    flightMission.getAssignedCrew()) {
-                switch (i.getRole()) {
-                    case MISSION_SPECIALIST -> m++;
-                    case FLIGHT_ENGINEER -> f++;
-                    case PILOT -> p++;
-                    case COMMANDER -> c++;
-                }
-            }
-             System.out.println("Crew of SpaceShip of FlightMission consist of: "+m+" MISSION_SPECIALISTS\n"
-                     +f+" FLIGHT_ENGINEERS\n"+p+" PILOTS\n"+c+" COMMANDERS\n");
-            System.out.println("Enter number of MISSION_SPECIALISTS, which you want to enter");
-            short b = scanner.nextShort();
-             while (b > m){
-                System.out.println("Too much, try again");
-                b = scanner.nextShort();
-             }
-                crewMap.put(Role.MISSION_SPECIALIST, b);
-             System.out.println("Enter number of FLIGHT_ENGINEERS, which you want to enter");
-             b = scanner.nextShort();
-             while (b > f){
-                 System.out.println("Too much, try again");
-                 b = scanner.nextShort();
-             }
-             crewMap.put(Role.FLIGHT_ENGINEER, b);
-             System.out.println("Enter number of PILOTS, which you want to enter");
-             b = scanner.nextShort();
-             while (b > p){
-                 System.out.println("Too much, try again");
-                 b = scanner.nextShort();
-             }
-             crewMap.put(Role.PILOT, b);
-             System.out.println("Enter number of COMMANDERS, which you want to enter");
-             b = scanner.nextShort();
-             while (b > c){
-                 System.out.println("Too much, try again");
-                 b = scanner.nextShort();
-             }
-             crewMap.put(Role.COMMANDER, b);
-             flightMission.getAssignedSpaceShip().setCrew(crewMap);
-             System.out.println("SpaceShip Crew updated!");
-        }
-         else if(input==1){
-             System.out.println("FlightDistance = "+flightMission.getAssignedSpaceShip().getFlightDistance());
-             System.out.println("Enter new FlightDistance of spaceship");
-             long dist = scanner.nextLong();
-             while (dist<flightMission.getAssignedSpaceShip().getFlightDistance()){
-                 System.out.println("Too small value of FlightDistance, Try again");
-                 dist = scanner.nextLong();
-             }
-             flightMission.getAssignedSpaceShip().setFlightDistance(dist);
-         }
-         return flightMission;
+        return null;
     }
 
 
@@ -158,7 +94,6 @@ public class MissionServiceImpl implements MissionService{
 
     @Override
     public FlightMission createMission(FlightMission flightMission) throws IOException {
-        //  команда
         CrewService crewService = CrewServiceImpl.getInstance();
         SpaceshipService spaceshipService = SpaceshipServiceImpl.getInstance();
         SpaceMapService spaceMapService = SpaceMapServiceImpl.getInstance();
@@ -217,13 +152,16 @@ public class MissionServiceImpl implements MissionService{
         spaceshipCriteria.setFlightDistance(flightMission.getDistance());
         ArrayList<Spaceship> spaceships = (ArrayList<Spaceship>) spaceshipService.findAllSpaceshipsByCriteria(spaceshipCriteria);
         for (int i = 0; i < spaceships.size(); i++) {
-            System.out.println(i +"    :       "+spaceships.get(i).getName()+"  -   "+spaceships.get(i).toString());
+            System.out.println(i + "    :       " + spaceships.get(i).getName() + "  -   " + spaceships.get(i).toString());
         }
-
+            boolean spaceShipsIsEmpty = false;
+        if(spaceships.isEmpty()){
+            spaceShipsIsEmpty = true;
+        }
         System.out.println("You want to use SpaceShip from List or Create your own SpaceShip?\n 1 - From List\n 2 - By myself");
         int choice=scanner.nextInt();
-        while (choice!=1&&choice!=2){
-            System.out.println("Bad choice, try again");
+        while ((choice!=1&&choice!=2)||(spaceShipsIsEmpty&&choice==1)){
+            System.out.println("Bad choice(May be list is Empty), try again");
             choice=scanner.nextInt();
         }
         if(choice==1){
@@ -289,7 +227,7 @@ public class MissionServiceImpl implements MissionService{
         p = flightMission.getAssignedSpaceShip().getCrew().get(Role.PILOT);
         c = flightMission.getAssignedSpaceShip().getCrew().get(Role.COMMANDER);
 
-        System.out.println("You need: "+m+" MISSION_SPECIALISTS\n"
+        System.out.println("You need: \n"+m+" MISSION_SPECIALISTS\n"
                 +f+" FLIGHT_ENGINEERS\n"+p+" PILOTS\n"+c+" COMMANDERS\n");
         System.out.println("You want to find CrewMembers by yourself?\n 1 - Yea\n 2 - No");
         choice3 =scanner.nextInt();
@@ -298,10 +236,255 @@ public class MissionServiceImpl implements MissionService{
             choice3=scanner.nextInt();
         }
         if(choice3==1) {
-            //Учитывать, что челики заканчиваются
+           /////////////////////////////////////////////////////////////////////
+            System.out.println("You may use CrewMembers : ");
+            CrewMemberCriteria criteria = new CrewMemberCriteria();
+            ArrayList<CrewMember> crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+            for (int i = 0; i < crewMembers.size(); i++) {
+                System.out.println(i +"    :       "+crewMembers.get(i).getName()+"  -   "+crewMembers.get(i).toString());
+            }
 
+            boolean crewMembersIsEmpty = false;
+            if(crewMembers.isEmpty()){
+                crewMembersIsEmpty = true;
+            }
+            System.out.println("You want to use CrewMembers from List or Create your own CrewMembers?\n 1 - From List\n 2 - By myself");
+            int choice=scanner.nextInt();
+            while ((choice!=1&&choice!=2)||(crewMembersIsEmpty&&choice==1)){
+                System.out.println("Bad choice(May be list is Empty), try again");
+                choice=scanner.nextInt();
+            }
+
+            if(choice==1){
+
+                //1.
+                System.out.println("Let's chose "+ f +" FLIGHT_ENGINEERS from list:");
+                criteria.setRole(Role.FLIGHT_ENGINEER);
+                crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+                for (int i = 0; i < f; i++) {
+                    crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+                    for (int j = 0; j < crewMembers.size(); j++) {
+                        System.out.println(j +"    :       "+crewMembers.get(j).getName()+"  -   "+crewMembers.get(j).toString());
+                    }
+                    if(crewMembersIsEmpty){
+                        System.out.println("There are no any FLIGHT_ENGINEERS at List");
+                        System.out.println("You have to create " + (f - i - 1) + "CrewMembers(FLIGHT_ENGINEERS)");
+                        CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                        while(crewMember.getRole()!=Role.FLIGHT_ENGINEER){
+                            System.out.println("Try again");
+                            crewMember = crewService.createCrewMember(new CrewMember());
+                        }
+                        assignCrewMemberOnMission(crewMember,flightMission);
+                        System.out.println("CrewMember assigned");
+                    }
+                    else {
+                        System.out.println("Enter number of CrewMember");
+                        int choice1 = scanner.nextInt();
+                        while (choice1 >= crewMembers.size()) {
+                            System.out.println("Bad chose, Try again");
+                            choice1 = scanner.nextInt();
+                        }
+                        System.out.println("Good Choice!");
+                        System.out.println("Do you want to update this CrewMember?\n 1 - Yea\n 2 - No");
+                        int choice2 = scanner.nextInt();
+                        while (choice2 != 1 && choice2 != 2) {
+                            System.out.println("Bad choice, try again");
+                            choice2 = scanner.nextInt();
+                        }
+                        if (choice2 == 1) {
+                            System.out.println("Be careful and use Role :  FLIGHT_ENGINEERS");
+                            crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            while (crewMembers.get(choice1).getRole() != Role.FLIGHT_ENGINEER) {
+                                System.out.println("Crew member must be FLIGHT_ENGINEERS");
+                                crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            }
+                        }
+                        assignCrewMemberOnMission(crewMembers.get(choice1), flightMission);
+                        System.out.println("CrewMember was assign to the mission!");
+                    }
+                }
+
+                //2.
+                System.out.println("Let's chose "+ m +" MISSION_SPECIALISTS from list:");
+                criteria.setRole(Role.MISSION_SPECIALIST);
+                for (int i = 0; i < m; i++) {
+                    crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+                    for (int j = 0; j < crewMembers.size(); j++) {
+                        System.out.println(j +"    :       "+crewMembers.get(j).getName()+"  -   "+crewMembers.get(j).toString());
+                    }
+                    if(crewMembersIsEmpty){
+                        System.out.println("There are no any MISSION_SPECIALISTS at List");
+                        System.out.println("You have to create " + (m - i - 1) + "CrewMembers(MISSION_SPECIALISTS)");
+                        CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                        while(crewMember.getRole()!=Role.MISSION_SPECIALIST){
+                            System.out.println("Try again");
+                            crewMember = crewService.createCrewMember(new CrewMember());
+                        }
+                        assignCrewMemberOnMission(crewMember,flightMission);
+                        System.out.println("CrewMember assigned");
+                    }
+                    else {
+                        System.out.println("Enter number of CrewMember");
+                        int choice1 = scanner.nextInt();
+                        while (choice1 >= crewMembers.size()) {
+                            System.out.println("Bad chose, Try again");
+                            choice1 = scanner.nextInt();
+                        }
+                        System.out.println("Good Choice!");
+                        System.out.println("Do you want to update this CrewMember?\n 1 - Yea\n 2 - No");
+                        int choice2 = scanner.nextInt();
+                        while (choice2 != 1 && choice2 != 2) {
+                            System.out.println("Bad choice, try again");
+                            choice2 = scanner.nextInt();
+                        }
+                        if (choice2 == 1) {
+                            System.out.println("Be careful and use Role :  MISSION_SPECIALIST");
+                            crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            while (crewMembers.get(choice1).getRole() != Role.MISSION_SPECIALIST) {
+                                System.out.println("Crew member must be MISSION_SPECIALIST");
+                                crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            }
+                        }
+                        assignCrewMemberOnMission(crewMembers.get(choice1), flightMission);
+                        System.out.println("CrewMember was assign to the mission!");
+                    }
+                }
+
+                //3.
+                System.out.println("Let's chose "+ p +" PILOTS from list:");
+                criteria.setRole(Role.PILOT);
+                for (int i = 0; i < p; i++) {
+                    crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+                    for (int j = 0; j < crewMembers.size(); j++) {
+                        System.out.println(j +"    :       "+crewMembers.get(j).getName()+"  -   "+crewMembers.get(j).toString());
+                    }
+                    if(crewMembersIsEmpty){
+                        System.out.println("There are no any PILOTS at List");
+                        System.out.println("You have to create " + (p - i - 1) + "CrewMembers(PILOTS)");
+                        CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                        while(crewMember.getRole()!=Role.PILOT){
+                            System.out.println("Try again");
+                            crewMember = crewService.createCrewMember(new CrewMember());
+                        }
+                        assignCrewMemberOnMission(crewMember,flightMission);
+                        System.out.println("CrewMember assigned");
+                    }
+                    else {
+                        System.out.println("Enter number of CrewMember");
+                        int choice1 = scanner.nextInt();
+                        while (choice1 >= crewMembers.size()) {
+                            System.out.println("Bad chose, Try again");
+                            choice1 = scanner.nextInt();
+                        }
+                        System.out.println("Good Choice!");
+                        System.out.println("Do you want to update this CrewMember?\n 1 - Yea\n 2 - No");
+                        int choice2 = scanner.nextInt();
+                        while (choice2 != 1 && choice2 != 2) {
+                            System.out.println("Bad choice, try again");
+                            choice2 = scanner.nextInt();
+                        }
+                        if (choice2 == 1) {
+                            System.out.println("Be careful and use Role :  PILOTS");
+                            crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            while (crewMembers.get(choice1).getRole() != Role.PILOT) {
+                                System.out.println("Crew member must be PILOTS");
+                                crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            }
+                        }
+                        assignCrewMemberOnMission(crewMembers.get(choice1), flightMission);
+                        System.out.println("CrewMember was assign to the mission!");
+                    }
+                }
+
+                //4
+                System.out.println("Let's chose "+ c +" COMMANDERS from list:");
+                criteria.setRole(Role.COMMANDER);
+                for (int i = 0; i < c; i++) {
+                    crewMembers = (ArrayList<CrewMember>) crewService.findAllCrewMembersByCriteria(criteria);
+                    for (int j = 0; j < crewMembers.size(); j++) {
+                        System.out.println(j +"    :       "+crewMembers.get(j).getName()+"  -   "+crewMembers.get(j).toString());
+                    }
+                    if(crewMembersIsEmpty){
+                        System.out.println("There are no any COMMANDERS at List");
+                        System.out.println("You have to create " + (c - i - 1) + "CrewMembers(COMMANDERS)");
+                        CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                        while(crewMember.getRole()!=Role.COMMANDER){
+                            System.out.println("Try again");
+                            crewMember = crewService.createCrewMember(new CrewMember());
+                        }
+                        assignCrewMemberOnMission(crewMember,flightMission);
+                        System.out.println("CrewMember assigned");
+                    }
+                    else {
+                        System.out.println("Enter number of CrewMember");
+                        int choice1 = scanner.nextInt();
+                        while (choice1 >= crewMembers.size()) {
+                            System.out.println("Bad chose, Try again");
+                            choice1 = scanner.nextInt();
+                        }
+                        System.out.println("Good Choice!");
+                        System.out.println("Do you want to update this CrewMember?\n 1 - Yea\n 2 - No");
+                        int choice2 = scanner.nextInt();
+                        while (choice2 != 1 && choice2 != 2) {
+                            System.out.println("Bad choice, try again");
+                            choice2 = scanner.nextInt();
+                        }
+                        if (choice2 == 1) {
+                            System.out.println("Be careful and use Role :  COMMANDERS");
+                            crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            while (crewMembers.get(choice1).getRole() != Role.COMMANDER) {
+                                System.out.println("Crew member must be COMMANDERS");
+                                crewService.updateCrewMemberDetails(crewMembers.get(choice1));
+                            }
+                        }
+                        assignCrewMemberOnMission(crewMembers.get(choice1), flightMission);
+                        System.out.println("CrewMember was assign to the mission!");
+                    }
+                }
+            }
+            else if(choice==2){
+                System.out.println("Let's create "+ m +" MISSION_SPECIALISTS");
+                for (int i = 0; i < m; i++) {
+                    CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                    while(crewMember.getRole()!=Role.MISSION_SPECIALIST){
+                        System.out.println("Try again");
+                        crewMember = crewService.createCrewMember(new CrewMember());
+                    }
+                    assignCrewMemberOnMission(crewMember,flightMission);
+                    System.out.println("CrewMember assigned");
+                }
+                System.out.println("Let's create "+ f +" FLIGHT_ENGINEERS");
+                for (int i = 0; i < f; i++) {
+                    CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                    while(crewMember.getRole()!=Role.FLIGHT_ENGINEER){
+                        System.out.println("Try again");
+                        crewMember = crewService.createCrewMember(new CrewMember());
+                    }
+                    assignCrewMemberOnMission(crewMember,flightMission);
+                    System.out.println("CrewMember assigned");
+                }
+                System.out.println("Let's create "+ m +" PILOTS");
+                for (int i = 0; i < p; i++) {
+                    CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                    while(crewMember.getRole()!=Role.PILOT){
+                        System.out.println("Try again");
+                        crewMember = crewService.createCrewMember(new CrewMember());
+                    }
+                    assignCrewMemberOnMission(crewMember,flightMission);
+                    System.out.println("CrewMember assigned");
+                }
+                System.out.println("Let's create "+ f +" COMMANDERS");
+                for (int i = 0; i < f; i++) {
+                    CrewMember crewMember = crewService.createCrewMember(new CrewMember());
+                    while(crewMember.getRole()!=Role.COMMANDER){
+                        System.out.println("Try again");
+                        crewMember = crewService.createCrewMember(new CrewMember());
+                    }
+                    assignCrewMemberOnMission(crewMember,flightMission);
+                    System.out.println("CrewMember assigned");
+                }
+            }
         }
-
         else if(choice3==2){
             CrewMemberCriteria crewMemberCriteria = new CrewMemberCriteria();
             crewMemberCriteria.setRole(Role.MISSION_SPECIALIST);
@@ -326,7 +509,7 @@ public class MissionServiceImpl implements MissionService{
                     assignCrewMemberOnMission(crewService.findCrewMemberByCriteria(crewMemberCriteria).get(),flightMission);
                 }
                 else {
-                    System.out.println("You have to create " + (f - i - 1) + "CrewMembers(MISSION_SPECIALISTS)");
+                    System.out.println("You have to create " + (f - i - 1) + "CrewMembers(FLIGHT_ENGINEERS)");
                     CrewMember crewMember = crewService.createCrewMember(new CrewMember());
                     while(crewMember.getRole()!=Role.FLIGHT_ENGINEER){
                         System.out.println("Try again");
@@ -341,7 +524,7 @@ public class MissionServiceImpl implements MissionService{
                     assignCrewMemberOnMission(crewService.findCrewMemberByCriteria(crewMemberCriteria).get(),flightMission);
                 }
                 else {
-                    System.out.println("You have to create " + (p - i - 1) + "CrewMembers(MISSION_SPECIALISTS)");
+                    System.out.println("You have to create " + (p - i - 1) + "CrewMembers(PILOTS)");
                     CrewMember crewMember = crewService.createCrewMember(new CrewMember());
                     while(crewMember.getRole()!=Role.PILOT){
                         System.out.println("Try again");
@@ -356,7 +539,7 @@ public class MissionServiceImpl implements MissionService{
                     assignCrewMemberOnMission(crewService.findCrewMemberByCriteria(crewMemberCriteria).get(),flightMission);
                 }
                 else {
-                    System.out.println("You have to create " + (c - i - 1) + "CrewMembers(MISSION_SPECIALISTS)");
+                    System.out.println("You have to create " + (c - i - 1) + "CrewMembers(COMMANDERS)");
                     CrewMember crewMember = crewService.createCrewMember(new CrewMember());
                     while(crewMember.getRole()!=Role.COMMANDER){
                         System.out.println("Try again");
@@ -370,4 +553,34 @@ public class MissionServiceImpl implements MissionService{
         flightMissions.add(flightMission);
         return flightMission;
     }
+
+    public void startMission (FlightMission flightMission) {
+        if(flightMission.getMissionResult()==MissionResult.PLANNED){
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusSeconds(flightMission.getDistance());
+        flightMission.setEndDate(end);
+        flightMission.setStartDate(start);
+        flightMission.setMissionResult(MissionResult.IN_PROGRESS);
+        }
+        else {
+            System.out.println("You should create mission");
+        }
+    }
+
+    public void cancelMission (FlightMission flightMission) {
+        if(flightMission.getMissionResult()==MissionResult.IN_PROGRESS){
+            LocalDateTime end = LocalDateTime.now();
+            flightMission.setEndDate(end);
+            flightMission.setMissionResult(MissionResult.CANCELLED);
+            flightMission.getAssignedSpaceShip().setReadyForNextMissions(true);
+            for (CrewMember i :
+                 flightMission.getAssignedCrew()) {
+                i.setReadyForNextMissions(true);
+            }
+        }
+        else {
+            System.out.println("You can't cancel unstarted mission");
+        }
+    }
+
 }
