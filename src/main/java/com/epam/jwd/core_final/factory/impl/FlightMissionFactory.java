@@ -60,6 +60,7 @@ public class FlightMissionFactory implements EntityFactory<FlightMission> {
                     .addAssignedCrew(assignedCrew)
                     .addAssignedSpaceShip(assignedSpaceShip)
                     .addDistance(distance)
+                    .addStatus()
                     .build();
         }catch(InvalidArgsFactoryException e){
             System.out.println(new InvalidArgsFactoryException("FlightMission3").getMessage());

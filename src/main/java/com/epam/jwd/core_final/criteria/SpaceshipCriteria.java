@@ -8,6 +8,36 @@ import java.util.Map;
  * Should be a builder for {@link Spaceship} fields
  */
 public class SpaceshipCriteria extends Criteria<Spaceship> {
+    private Long flightDistance;
+    private boolean isReadyForNextMissions = true;
+    private String name;
+
+
+
+    public Long getFlightDistance() {
+        return flightDistance;
+    }
+
+    public void setFlightDistance(Long flightDistance) {
+        this.flightDistance = flightDistance;
+    }
+
+    public boolean isReadyForNextMissions() {
+        return isReadyForNextMissions;
+    }
+
+    public void setReadyForNextMissions(boolean readyForNextMissions) {
+        isReadyForNextMissions = readyForNextMissions;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static class Builder extends BaseBuilder<Spaceship> {
 
         public SpaceshipCriteria.Builder addName(String name){

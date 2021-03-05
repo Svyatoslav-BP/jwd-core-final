@@ -12,6 +12,9 @@ public class Spaceship extends AbstractBaseEntity {
     private Map<Role,Short> crew;
     private Long flightDistance;
     private boolean isReadyForNextMissions = true;
+    public Spaceship(){
+        super("");
+    }
 
     public Map<Role, Short> getCrew() {
         return crew;

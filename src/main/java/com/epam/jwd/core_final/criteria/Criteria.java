@@ -8,6 +8,7 @@ import com.epam.jwd.core_final.domain.BaseEntity;
  */
 public abstract class Criteria<T extends BaseEntity> {
 
+
     protected static abstract class BaseBuilder<T extends  BaseEntity> {
         protected T thisClass;
 

@@ -12,6 +12,10 @@ public class CrewMember extends AbstractBaseEntity {
     private Rank rank;
     private boolean isReadyForNextMissions = true;
 
+    public CrewMember() {
+        super("");
+    }
+
     public Role getRole() {
         return role;
     }

@@ -10,20 +10,29 @@ import java.util.List;
  * Should be a builder for {@link com.epam.jwd.core_final.domain.FlightMission} fields
  */
 public class FlightMissionCriteria extends Criteria<FlightMission> {
+    public MissionResult getMissionResult() {
+        return missionResult;
+    }
+
+    public void setMissionResult(MissionResult missionResult) {
+        this.missionResult = missionResult;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private MissionResult missionResult;
+    private String name;
+
     public static class Builder extends BaseBuilder<FlightMission>{
 
         public FlightMissionCriteria.Builder addName(String name){
             thisClass = new FlightMission(name);
-            return this;
-        }
-
-        public FlightMissionCriteria.Builder addStartDate(LocalDateTime startDate){
-            thisClass.setStartDate(startDate);
-            return this;
-        }
-
-        public FlightMissionCriteria.Builder addEndDate(LocalDateTime end){
-            thisClass.setEndDate(end);
             return this;
         }
 
@@ -50,6 +59,11 @@ public class FlightMissionCriteria extends Criteria<FlightMission> {
 
         public FlightMissionCriteria.Builder addTo(Planet to){
             thisClass.setTo(to);
+            return this;
+        }
+
+        public FlightMissionCriteria.Builder addStatus(){
+            thisClass.setMissionResult(MissionResult.PLANNED);
             return this;
         }
 

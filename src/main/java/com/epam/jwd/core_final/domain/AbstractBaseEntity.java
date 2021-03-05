@@ -14,6 +14,10 @@ public abstract class AbstractBaseEntity implements BaseEntity {
     private Long id;
     private String name;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public AbstractBaseEntity(String name) {
         id = count.incrementAndGet();
         this.name = name;

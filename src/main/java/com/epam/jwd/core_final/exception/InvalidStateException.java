@@ -4,7 +4,6 @@ public class InvalidStateException extends Exception {
 
     public InvalidStateException() {
         super();
-        System.out.println(getMessage());
     }
 
     @Override

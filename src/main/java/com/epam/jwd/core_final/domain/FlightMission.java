@@ -2,6 +2,7 @@ package com.epam.jwd.core_final.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,12 @@ public class FlightMission extends AbstractBaseEntity {
     private MissionResult missionResult;
     private Planet from;
     private Planet to;
+
+    public FlightMission(){
+        super("");
+        assignedCrew = new ArrayList<>();
+
+    }
 
     @Override
     public String toString() {

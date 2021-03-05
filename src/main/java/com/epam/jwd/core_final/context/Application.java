@@ -7,10 +7,9 @@ import java.util.function.Supplier;
 
 public interface Application {
 
+    final NassaContext nassaContext = new NassaContext();
     static ApplicationMenu start() throws InvalidStateException {
-        final Supplier<ApplicationContext> applicationContextSupplier = null; // todo
-        final NassaContext nassaContext = new NassaContext();
-
+        final Supplier<ApplicationContext> applicationContextSupplier =() -> nassaContext; // todo
         nassaContext.init();
         return applicationContextSupplier::get;
     }
